@@ -1,0 +1,48 @@
+//
+//  ShouyeMapViewController.h
+//  龙代驾
+//
+//  Created by mac on 13-11-11.
+//  Copyright (c) 2013年 Ali Karagoz. All rights reserved.
+//
+#import <UIKit/UIKit.h>
+#import "BMapKit.h"
+
+@protocol MapViewControllerDidSelectDelegate;
+
+@interface ShouyeMapViewController : UIViewController<BMKMapViewDelegate,BMKSearchDelegate>
+{
+    BMKSearch* _search;
+}
+@property (strong,nonatomic)NSArray * arrayList;
+@property (strong,nonatomic)NSDictionary * dicList;
+@property (strong,nonatomic)IBOutlet BMKMapView * _mapView;
+@property (strong,nonatomic)BMKAnnotationView * annoView;
+
+@property (strong,nonatomic)UIButton * btn1;
+@property (strong,nonatomic)UIButton * btn2;
+
+@property (strong,nonatomic)NSString * strFather;
+@property (strong,nonatomic)NSString * strLat;
+@property (strong,nonatomic)NSString * strLon;
+@property (strong,nonatomic)UIActivityIndicatorView * activityView;
+@property (strong ,nonatomic)UIActivityIndicatorView *act;
+
+
+
+
+-(id)initWithFather:(NSString * )f;
+
+@property(nonatomic,assign)id<MapViewControllerDidSelectDelegate> delegate;
+
+
+- (void)resetAnnitations:(NSArray *)data;
+-(void)setAnnotionsWithList:(NSArray *)list;
+@end
+
+@protocol MapViewControllerDidSelectDelegate <NSObject>
+
+@optional
+- (void)customMKMapViewDidSelectedWithInfo:(id)info;
+
+@end
