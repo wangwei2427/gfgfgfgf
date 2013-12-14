@@ -44,7 +44,7 @@
 
 @synthesize isMain = _isMain;
 @synthesize tableV = _tableV;
-
+// my
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
