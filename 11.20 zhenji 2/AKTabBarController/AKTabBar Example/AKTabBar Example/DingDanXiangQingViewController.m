@@ -397,7 +397,7 @@
     //_historyMap.delegate = self;
     
     BMKRoute *path = [[BMKRoute alloc]init];
-    path
+    //path
     
     
     CLLocationCoordinate2D coor1;

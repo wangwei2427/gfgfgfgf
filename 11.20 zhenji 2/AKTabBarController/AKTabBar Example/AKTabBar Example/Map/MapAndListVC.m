@@ -34,10 +34,7 @@
     NSString *lat;
     NSString *lon;
     bool isLocated;
-    NSString *driverStatus;
-    NSString *daijia_name;
-    NSString *daijia_jiebie_id;
-    UIButton *zoomout;
+        UIButton *zoomout;
     UIButton *zoomin;
     UIButton *location;
 }
@@ -68,7 +65,7 @@
     _mapView = [[BMKMapView alloc]initWithFrame:CGRectMake(0, 64, 320, [UIScreen mainScreen].bounds.size.height-64)];
     [self.view addSubview:_mapView];
     _tableV.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
-    _tableV.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    //_tableV.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     UIView * tableview=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 123, 30)];
     //地图按钮
     btn1=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -186,8 +183,9 @@
         [_mapView removeAnnotations:annotationArray];
     }
     j = 0;
+    NSLog(@"------%@",list);
     for (NSDictionary *dic in list) {
-        NSLog(@"%@----%@",[dic objectForKey:@"lng"],[dic objectForKey:@"lat"]);
+        // NSLog(@"%@----%@",[dic objectForKey:@"lng"],[dic objectForKey:@"lat"]);
         BMKPointAnnotation *pointAnnotation2 = [[BMKPointAnnotation alloc]init];
         CLLocationCoordinate2D coor2;
         coor2.latitude = [[dic objectForKey:@"lng"]doubleValue];
@@ -195,10 +193,7 @@
         pointAnnotation2.coordinate = coor2;
         [_mapView addAnnotation:pointAnnotation2];
         [annotationArray addObject:pointAnnotation2];
-        driverStatus = [dic objectForKey:@"driverStatus"];
-        daijia_name = [dic objectForKey:@"daijia_name"];
-        daijia_jiebie_id = [dic objectForKey:@"daijia_jiebie_id"];
-    }
+            }
 
 }
 
@@ -216,7 +211,7 @@
     // 设置可拖拽
     ((BMKPinAnnotationView*)newAnnotation).draggable = NO;
     //设置大头针图标
-    if ([driverStatus isEqualToString:@"1"]) {
+    if ([[[arrayList objectAtIndex:j] objectForKey:@"driverStatus"] isEqualToString:@"1"]) {
         ((BMKPinAnnotationView*)newAnnotation).image = [UIImage imageNamed:@"driver_green"];
     }
     else{
@@ -224,13 +219,14 @@
     }
     //司机姓名
     UILabel *driverName = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 60, 20)];
-    driverName.text = daijia_name;
+    driverName.text = [[arrayList objectAtIndex:j] objectForKey:@"daijia_name"];
+    
     driverName.backgroundColor = [UIColor clearColor];
     driverName.font = [UIFont systemFontOfSize:12];
     driverName.textColor = [UIColor blackColor];
     driverName.textAlignment = NSTextAlignmentCenter;
     [newAnnotation addSubview:driverName];
-    UIImageView *star = [[UIImageView alloc]initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"星星%d",[daijia_jiebie_id intValue]]]];
+    UIImageView *star = [[UIImageView alloc]initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"星星%d",[[[arrayList objectAtIndex:j]objectForKey:@"daijia_jiebie_id"]intValue]]]];
     star.frame = CGRectMake(5, 15, 50, 10);
     [newAnnotation addSubview:star];
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -238,9 +234,7 @@
     [btn addTarget:self action:@selector(annotationClick:) forControlEvents:UIControlEventTouchUpInside];
     [newAnnotation addSubview:btn];
     btn.tag = j;
-    
-    
-    
+    NSLog(@"----%d",j);
     newAnnotation.tag = j;
     j++;
     return newAnnotation;
@@ -249,7 +243,7 @@
 -(void)annotationClick:(UIButton *)sender
 {
     AppDelegate *my=(AppDelegate *)[[UIApplication sharedApplication]delegate];
-    my.dict = [arrayList objectAtIndex:sender.tag-1];
+    my.dict = [arrayList objectAtIndex:sender.tag];
     NSLog(@"%@",my.dict);
     SiJiXiangQingViewController * siji=[[SiJiXiangQingViewController alloc]initWithDic:my.dict father:@"1"];
     [self.navigationController pushViewController:siji animated:YES];
@@ -426,9 +420,9 @@
                 
             }
             else{
-                NSLog(@"ReverseGeocode search failed!");
-                //            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查定位功能或稍后重试" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                //            [alert show];
+//                NSLog(@"ReverseGeocode search failed!");
+//                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查定位功能或稍后重试" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+//                [alert show];
                 
             }
             
