@@ -68,7 +68,7 @@
 //    
    _mapView = [[BMKMapView alloc]initWithFrame:CGRectMake(0, 64, 320, [UIScreen mainScreen].bounds.size.height-64)];
     [self.view addSubview:_mapView];
-   // _tableV.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
+    _tableV.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
     _tableV.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 //
     UIView * titleView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 123, 30)];
@@ -284,15 +284,14 @@
       [self setAnnotionsWithList:arrayList];
         NSLog(@"<><><><><><><><><><><><><><><><><><><>%d",arrayList.count);
     }
-    [_tableV reloadData];
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     //    //_mapView.zoomLevel=16.0;
     [self.activityView stopAnimating];
     [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
-    //    //反编译
-    CLLocationCoordinate2D pt = (CLLocationCoordinate2D){0, 0};
-    pt = (CLLocationCoordinate2D){[lat doubleValue], [lon doubleValue]};
+//    //    //反编译
+//    CLLocationCoordinate2D pt = (CLLocationCoordinate2D){0, 0};
+//    pt = (CLLocationCoordinate2D){[lat doubleValue], [lon doubleValue]};
 //    BOOL flag = [_search reverseGeocode:pt];
 //    if (flag) {
 //        NSLog(@"ReverseGeocode search success.");
@@ -302,6 +301,8 @@
 //        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查定位功能或稍后重试" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
 //        [alert show];
 //    }
+    [_tableV reloadData];
+
 }
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *) error {
     self.data = nil;
@@ -617,6 +618,7 @@
             self.listButton.enabled=YES;
             self.mapButton.selected=YES;
             self.mapButton.enabled=NO;
+            _mapView.showsUserLocation = YES;
             zoomin.hidden = NO;
             zoomout.hidden = NO;
             location.hidden = NO;
@@ -631,6 +633,7 @@
             self.listButton.selected=YES;
             self.mapButton.enabled=YES;
             self.listButton.enabled=NO;
+            _mapView.showsUserLocation = NO;
             zoomin.hidden = YES;
             zoomout.hidden = YES;
             location.hidden = YES;
