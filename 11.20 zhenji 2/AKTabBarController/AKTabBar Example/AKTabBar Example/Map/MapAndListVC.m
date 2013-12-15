@@ -19,12 +19,12 @@
 #import "OAApi.h"
 #import "SVProgressHUD.h"
 @interface MapAndListVC ()
-
+@property (nonatomic, strong) UIButton *mapButton;
+@property (nonatomic, strong) UIButton *listButton;
+@property (nonatomic, strong) NSMutableData *data;
 @end
 
 @implementation MapAndListVC{
-    UIButton *btn1;
-    UIButton *btn2;
     NSMutableArray *arrayList;
     NSDictionary *dict;
     NSMutableArray *annotationArray;
@@ -41,7 +41,6 @@
     UIButton *zoomin;
     UIButton *location;
 }
-
 @synthesize isMain = _isMain;
 @synthesize tableV = _tableV;
 
@@ -54,50 +53,50 @@
     return self;
 }
 -(void)viewDidAppear:(BOOL)animated{
-    //[self UpdataData];
+    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
     // Do any additional setup after loading the view from its nib.
     arrayList = [[NSMutableArray alloc]initWithCapacity:0];
     annotationArray = [[NSMutableArray alloc]initWithCapacity:0];
     j = 0;
     isLocated = NO;
+    
     _mapView = [[BMKMapView alloc]initWithFrame:CGRectMake(0, 64, 320, [UIScreen mainScreen].bounds.size.height-64)];
     [self.view addSubview:_mapView];
     _tableV.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
     _tableV.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    UIView * tableview=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 123, 30)];
-    //地图按钮
-    btn1=[UIButton buttonWithType:UIButtonTypeCustom];
-    btn1.tag=1;
-    btn1.frame=CGRectMake(0, 0, 60, 30);
-    UIImage * image1=[UIImage imageNamed:@"地图.png"];
-    UIImage * image2=[UIImage imageNamed:@"地图1.png"];
-    [btn1 setImage:image1 forState:UIControlStateNormal];
-    [btn1 setImage:image2 forState:UIControlStateSelected];
-    [btn1 addTarget:self action:@selector(btnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [tableview addSubview:btn1];
-    //列表按钮
-    btn2=[UIButton buttonWithType:UIButtonTypeCustom];
-    btn2.tag=2;
-    btn2.frame=CGRectMake(63, 0, 60, 30);
-    UIImage * image3=[UIImage imageNamed:@"列表.png"];
-    UIImage * image4=[UIImage imageNamed:@"列表1.png"];
-    [btn2 setImage:image3 forState:UIControlStateNormal];
-    [btn2 setImage:image4 forState:UIControlStateSelected];
-    [btn2 addTarget:self action:@selector(btnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [tableview addSubview:btn2];
     
-    self.navigationItem.titleView=tableview;
+    UIView * titleView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 123, 30)];
+    
+    //地图按钮
+    self.mapButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    self.mapButton.tag=1;
+    self.mapButton.frame=CGRectMake(0, 0, 60, 30);
+    [self.mapButton setImage:[UIImage imageNamed:@"地图.png"] forState:UIControlStateNormal];
+    [self.mapButton setImage:[UIImage imageNamed:@"地图1.png"] forState:UIControlStateSelected];
+    [self.mapButton addTarget:self action:@selector(btnPress:) forControlEvents:UIControlEventTouchUpInside];
+    [titleView addSubview:self.mapButton];
+   
+    //列表按钮
+    self.listButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    self.listButton.tag=2;
+    self.listButton.frame=CGRectMake(63, 0, 60, 30);
+    [self.listButton setImage:[UIImage imageNamed:@"列表.png"] forState:UIControlStateNormal];
+    [self.listButton setImage:[UIImage imageNamed:@"列表1.png"] forState:UIControlStateSelected];
+    [self.listButton addTarget:self action:@selector(btnPress:) forControlEvents:UIControlEventTouchUpInside];
+    [titleView addSubview:self.listButton];
+    
+    self.navigationItem.titleView=titleView;
     UIBarButtonItem * rightButton = [[UIBarButtonItem alloc]
                                      initWithTitle:@"首页"
                                      style:UIBarButtonItemStyleBordered
                                      target:self
                                      action:@selector(shouye)];
     self.navigationItem.rightBarButtonItem = rightButton;
+   
     if (![_isMain isEqualToString:@"1"]) {
         self.navigationItem.rightBarButtonItem = nil;
     }
@@ -105,8 +104,7 @@
     zoomout=[UIButton buttonWithType:UIButtonTypeRoundedRect];
     zoomout.tag=1;
     zoomout.frame=CGRectMake(210, [UIScreen mainScreen].bounds.size.height-50, 50, 30);
-    UIImage * imageOut=[UIImage imageNamed:@"zoomout.png"];
-    [zoomout setImage:imageOut forState:UIControlStateNormal];
+    [zoomout setImage:[UIImage imageNamed:@"zoomout.png"] forState:UIControlStateNormal];
     [zoomout addTarget:self action:@selector(zoomChange:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:zoomout];
     
@@ -123,10 +121,13 @@
     [location setBackgroundImage:[UIImage imageNamed:@"btn_locatebg"] forState:UIControlStateNormal];
     [self.view addSubview:location];
     [location addTarget:self action:@selector(reLocated) forControlEvents:UIControlEventTouchUpInside];
-    
+    self.data = [[NSMutableData alloc] init];
 }
+
 -(void)reLocated{
     
+    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
+    _mapView.showsUserLocation = NO;
     [self UpdataData];
 }
 
@@ -145,39 +146,47 @@
 -(void)UpdataData
 {
     
-//     NSString * str=[NSString stringWithFormat:@"http://fr.eslgw.com/index.php/mobile/river_list?"];
-//    arrayList = [OAApi Url:str strLat:@"116.451248" strLon:@"39.86355"];
-//    NSLog(@"%@",arrayList);
-//    if (arrayList == nil || (id)arrayList == [NSNull null] ){
-//        NSLog(@"error");
+    //     NSString * str=[NSString stringWithFormat:@"http://fr.eslgw.com/index.php/mobile/river_list?"];
+    //    arrayList = [OAApi Url:str strLat:@"116.451248" strLon:@"39.86355"];
+    //    NSLog(@"%@",arrayList);
+    //    if (arrayList == nil || (id)arrayList == [NSNull null] ){
+    //        NSLog(@"error");
+    //    }
+    //    if (arrayList.count>0) {
+    //        [arrayList removeAllObjects];
+    //    }
+    
+    //,self.strLat,self.strLon];
+//    
+    NSString * str=[NSString stringWithFormat:@"http://fr.eslgw.com/index.php/mobile/river_list?lng=%@&lat=%@",@"116.451248",@"39.86355"];
+    NSURLRequest *request = [[NSURLRequest alloc]initWithURL:[NSURL URLWithString:str] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+      NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:self];
+    [connection start];
+//    NSData * response=[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//    
+//    if (response) {
+//        arrayList=[NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableLeaves error:nil];
+//        [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
+//        
+//        NSLog(@"----%@",arrayList);
+//        [self setAnnotionsWithList:arrayList];
+//        [_tableV reloadData];
 //    }
-//    if (arrayList.count>0) {
-//        [arrayList removeAllObjects];
-//    }
     
-                    //,self.strLat,self.strLon];
- [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
-   NSString * str=[NSString stringWithFormat:@"http://fr.eslgw.com/index.php/mobile/river_list?lng=%@&lat=%@",@"116.451248",@"39.86355"];
-    NSURLRequest * request=[NSURLRequest requestWithURL:[NSURL URLWithString:str]];
-    NSData * response=[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    
-    if (response) {
-        arrayList=[NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableLeaves error:nil];
-        [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
-       
-        NSLog(@"----%@",arrayList);
-        [self setAnnotionsWithList:arrayList];
-        [_tableV reloadData];
-        [SVProgressHUD dismiss];
-
+}
+-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+   
+    [self.data appendData:data];
+    if (self.data) {
+      arrayList=[NSJSONSerialization JSONObjectWithData:self.data options:NSJSONReadingMutableLeaves error:nil];
+      [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
     }
-    else{
-        [SVProgressHUD dismiss];
 
-    }
-    
-
-    _mapView.zoomLevel=16.0;
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    _mapView.showsUserLocation = YES;
+    //_mapView.zoomLevel=16.0;
+    [SVProgressHUD dismiss];
 }
 #pragma mark baidu
 
@@ -570,10 +579,10 @@
     switch (btn.tag) {
         case 1:
             NSLog(@"1");
-            btn2.selected=NO;
-            btn2.enabled=YES;
-            btn1.selected=YES;
-            btn1.enabled=NO;
+            self.listButton.selected=NO;
+            self.listButton.enabled=YES;
+            self.mapButton.selected=YES;
+            self.mapButton.enabled=NO;
             zoomin.hidden = NO;
             zoomout.hidden = NO;
             location.hidden = NO;
@@ -584,10 +593,10 @@
             break;
         case 2:
             NSLog(@"2");
-            btn1.selected=NO;
-            btn2.selected=YES;
-            btn1.enabled=YES;
-            btn2.enabled=NO;
+            self.mapButton.selected=NO;
+            self.listButton.selected=YES;
+            self.mapButton.enabled=YES;
+            self.listButton.enabled=NO;
             zoomin.hidden = YES;
             zoomout.hidden = YES;
             location.hidden = YES;

@@ -396,8 +396,8 @@
     [self.view addSubview:_historyMap];
     //_historyMap.delegate = self;
     
-    BMKRoute *path = [[BMKRoute alloc]init];
-    path
+//    BMKRoute *path = [[BMKRoute alloc]init];
+  //  path
     
     
     CLLocationCoordinate2D coor1;
