@@ -194,51 +194,51 @@
     self.labelZhuangTai.font=textFont;
     [self.view addSubview:self.labelZhuangTai];
     self.labelZhuangTai=nil;
-    
-    self.labelZhongDian=[[UILabel alloc]initWithFrame:CGRectMake(70, 160, w+w+w+w, h)];
+    //目的地
+    self.labelZhongDian=[[UILabel alloc]initWithFrame:CGRectMake(70, 160, 200, h)];
     self.labelZhongDian.text=[self.dicList objectForKey:@"zhongdian"];
     self.labelZhongDian.font=textFont;
     [self.view addSubview:self.labelZhongDian];
     self.labelZhongDian=nil;
     
-    
+    //呼叫时间
     self.labelHJTime=[[UILabel alloc]initWithFrame:CGRectMake(70, 180, w+w, h)];
- //   self.labelHJTime.text=[self.dicList objectForKey:@""];
+    //   self.labelHJTime.text=[self.dicList objectForKey:@""];
     self.labelHJTime.font=textFont;
     [self.view addSubview:self.labelHJTime];
     self.labelHJTime=nil;
     
-    
-    self.labelDengHouFei=[[UILabel alloc]initWithFrame:CGRectMake(250, 180, w, h)];
+    //等候费
+    self.labelDengHouFei=[[UILabel alloc]initWithFrame:CGRectMake(250, 220, w, h)];
     self.labelDengHouFei.text=[self.dicList objectForKey:@"denghoufei"];
     self.labelDengHouFei.font=textFont;
     [self.view addSubview:self.labelDengHouFei];
     self.labelDengHouFei=nil;
-
     
-    self.labelChuFaTime=[[UILabel alloc]initWithFrame:CGRectMake(70, 200, w+w+w, h)];
-
+    //出发时间
+    self.labelChuFaTime=[[UILabel alloc]initWithFrame:CGRectMake(250, 180, w+w+w, h)];
+    
     if ([[self.dicList objectForKey:@"go_time"] isKindOfClass:[NSNull class]]) {
         self.labelChuFaTime.text=@"";
     }
     else
     {
-     self.labelChuFaTime.text=[self.dicList objectForKey:@"go_time"];
+        self.labelChuFaTime.text=[self.dicList objectForKey:@"go_time"];
     }
-
+    
     self.labelChuFaTime.font=textFont;
     [self.view addSubview:self.labelChuFaTime];
     self.labelChuFaTime=nil;
-
     
-    self.labelQiBuJiaGe=[[UILabel alloc]initWithFrame:CGRectMake(250, 200, w, h)];
+    //起步价
+    self.labelQiBuJiaGe=[[UILabel alloc]initWithFrame:CGRectMake(70, 220, w, h)];
     self.labelQiBuJiaGe.text=[self.dicList objectForKey:@"price"];
     self.labelQiBuJiaGe.font=textFont;
     [self.view addSubview:self.labelQiBuJiaGe];
     self.labelQiBuJiaGe=nil;
-
     
-    self.labelKM=[[UILabel alloc]initWithFrame:CGRectMake(70, 220, w, h)];
+    //行驶公里
+    self.labelKM=[[UILabel alloc]initWithFrame:CGRectMake(70, 200, w, h)];
     if ([[self.dicList objectForKey:@"km"] isKindOfClass:[NSNull class]]) {
         self.labelKM.text=@"";
     }
@@ -251,15 +251,15 @@
     [self.view addSubview:self.labelKM];
     self.labelKM=nil;
     
-    
-    self.labelYSJinE=[[UILabel alloc]initWithFrame:CGRectMake(250, 220, w, h)];
+    //应收金额
+    self.labelYSJinE=[[UILabel alloc]initWithFrame:CGRectMake(70, 240, w, h)];
     self.labelYSJinE.text=[self.dicList objectForKey:@"yshoufei"];
     self.labelYSJinE.font=textFont;
     [self.view addSubview:self.labelYSJinE];
     self.labelYSJinE=nil;
     
-    
-    self.labelFaPiao=[[UILabel alloc]initWithFrame:CGRectMake(70, 240, w+w+w+w, h)];
+    //开具发票
+    self.labelFaPiao=[[UILabel alloc]initWithFrame:CGRectMake(250, 200, w+w+w+w, h)];
     int p=[[self.dicList objectForKey:@"fapiao"]intValue];
     if (p==0) {
         self.labelFaPiao.text=@"否";
@@ -273,20 +273,20 @@
     [self.view addSubview:self.labelFaPiao];
     self.labelFaPiao=nil;
     
-
-    self.labelShiFuMoney=[[UILabel alloc]initWithFrame:CGRectMake(70, 260, w, h)];
+    //实付金额
+    self.labelShiFuMoney=[[UILabel alloc]initWithFrame:CGRectMake(250, 260, w, h)];
     self.labelShiFuMoney.text=[self.dicList objectForKey:@"shoufei"];
     self.labelShiFuMoney.font=textFont;
     [self.view addSubview:self.labelShiFuMoney];
     self.labelShiFuMoney=nil;
-    
-    self.labelLCMoney=[[UILabel alloc]initWithFrame:CGRectMake(250, 160, w , h)];
+    //里程金额
+    self.labelLCMoney=[[UILabel alloc]initWithFrame:CGRectMake(70, 260, w , h)];
     self.labelLCMoney.text=[self.dicList objectForKey:@"mileage"];
     self.labelLCMoney.font=textFont;
     [self.view addSubview:self.labelLCMoney];
     self.labelLCMoney=nil;
-    
-    self.labelYHMoney=[[UILabel alloc]initWithFrame:CGRectMake(250, 260, w , h)];
+    //优惠金额
+    self.labelYHMoney=[[UILabel alloc]initWithFrame:CGRectMake(250, 240, w , h)];
     self.labelYHMoney.text=[self.dicList objectForKey:@"youhui"];
     self.labelYHMoney.font=textFont;
     [self.view addSubview:self.labelYHMoney];
@@ -298,7 +298,7 @@
     self.labelFaPiaoYouZi.font=textFont;
     self.labelFaPiaoYouZi.textColor=[UIColor grayColor];
     if (p!=0) {
-         [self.view addSubview:self.labelFaPiaoYouZi];
+        [self.view addSubview:self.labelFaPiaoYouZi];
     }
     self.labelFaPiaoYouZi=nil;
     
@@ -310,7 +310,7 @@
         [self.view addSubview:self.labelFPYouzi];
     }
     self.labelFPYouzi=nil;
-
+    
     textFont=nil;
     
     
@@ -338,12 +338,12 @@
     self.btnFaPiao.frame=CGRectMake(80, 290, 70, 25);
     self.btnFaPiao.tag=2;
     
-     UIImage * imageFaPiao=[UIImage imageNamed:@"发票补录.png"];
+    UIImage * imageFaPiao=[UIImage imageNamed:@"发票补录.png"];
     if (p==0) {
         imageFaPiao=[UIImage imageNamed:@"fapiao.png"];
         self.btnFaPiao.enabled=NO;
     }
-   
+    
     [self.btnFaPiao setImage:imageFaPiao forState:UIControlStateNormal];
     [self.btnFaPiao addTarget:self action:@selector(btnPress:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.btnFaPiao];
@@ -463,64 +463,64 @@
     self.labelMuDiDi.font=textFont;
     [self.view addSubview:self.labelMuDiDi];
     self.labelMuDiDi=nil;
-
+    
     self.labelHuJiaoShiJian=[[UILabel alloc]initWithFrame:CGRectMake(10, 180, w, h)];
     self.labelHuJiaoShiJian.text=@"呼叫时间:";
     self.labelHuJiaoShiJian.font=textFont;
     [self.view addSubview:self.labelHuJiaoShiJian];
     self.labelHuJiaoShiJian=nil;
     
-    self.labelDengHou=[[UILabel alloc]initWithFrame:CGRectMake(190, 180, w, h)];
+    self.labelDengHou=[[UILabel alloc]initWithFrame:CGRectMake(190, 220, w, h)];
     self.labelDengHou.text=@"等 候 费:";
     self.labelDengHou.font=textFont;
     [self.view addSubview:self.labelDengHou];
     self.labelDengHou=nil;
-
-    self.labelChuFaShiJian=[[UILabel alloc]initWithFrame:CGRectMake(10, 200, w, h)];
+    
+    self.labelChuFaShiJian=[[UILabel alloc]initWithFrame:CGRectMake(190, 180, w, h)];
     self.labelChuFaShiJian.text=@"出发时间:";
     self.labelChuFaShiJian.font=textFont;
     [self.view addSubview:self.labelChuFaShiJian];
     self.labelChuFaShiJian=nil;
     
     
-    self.labelQiBuJia=[[UILabel alloc]initWithFrame:CGRectMake(190, 200, w, h)];
+    self.labelQiBuJia=[[UILabel alloc]initWithFrame:CGRectMake(10, 220, w, h)];
     self.labelQiBuJia.text=@"起 步 价:";
     self.labelQiBuJia.font=textFont;
     [self.view addSubview:self.labelQiBuJia];
     self.labelQiBuJia=nil;
-
-    self.labelXingShi=[[UILabel alloc]initWithFrame:CGRectMake(10, 220, w, h)];
+    
+    self.labelXingShi=[[UILabel alloc]initWithFrame:CGRectMake(10, 200, w, h)];
     self.labelXingShi.text=@"行驶公里:";
     self.labelXingShi.font=textFont;
     [self.view addSubview:self.labelXingShi];
     self.labelXingShi=nil;
-
-    self.labelYingShouJinE=[[UILabel alloc]initWithFrame:CGRectMake(190, 220, w, h)];
+    
+    self.labelYingShouJinE=[[UILabel alloc]initWithFrame:CGRectMake(10, 240, w, h)];
     self.labelYingShouJinE.text=@"应收金额:";
     self.labelYingShouJinE.font=textFont;
     [self.view addSubview:self.labelYingShouJinE];
     self.labelYingShouJinE=nil;
     
-    self.labelFaPiaoKaiJv=[[UILabel alloc]initWithFrame:CGRectMake(10, 240, w, h)];
+    self.labelFaPiaoKaiJv=[[UILabel alloc]initWithFrame:CGRectMake(190, 200, w, h)];
     self.labelFaPiaoKaiJv.text=@"发票开据:";
     self.labelFaPiaoKaiJv.font=textFont;
     [self.view addSubview:self.labelFaPiaoKaiJv];
     self.labelFaPiaoKaiJv=nil;
-
-    self.labelShiFuJinE=[[UILabel alloc]initWithFrame:CGRectMake(10, 260, w, h)];
+    
+    self.labelShiFuJinE=[[UILabel alloc]initWithFrame:CGRectMake(190, 260, w, h)];
     self.labelShiFuJinE.text=@"实付金额:";
     self.labelShiFuJinE.font=textFont;
     [self.view addSubview:self.labelShiFuJinE];
     self.labelShiFuJinE=nil;
     
-    self.labelLiChengMoney=[[UILabel alloc]initWithFrame:CGRectMake(190, 160, w , h)];
+    self.labelLiChengMoney=[[UILabel alloc]initWithFrame:CGRectMake(10, 260, w , h)];
     self.labelLiChengMoney.text=@"里程金额:";
     self.labelLiChengMoney.font=textFont;
     [self.view addSubview:self.labelLiChengMoney];
     self.labelLiChengMoney=nil;
     
     
-    self.labelYouHuiMoney=[[UILabel alloc]initWithFrame:CGRectMake(190, 260, w , h)];
+    self.labelYouHuiMoney=[[UILabel alloc]initWithFrame:CGRectMake(190, 240, w , h)];
     self.labelYouHuiMoney.text=@"优惠金额:";
     self.labelYouHuiMoney.font=textFont;
     [self.view addSubview:self.labelYouHuiMoney];
@@ -530,7 +530,7 @@
     }else
     {
         [self performSelector:@selector(updataXX) withObject:nil afterDelay:0.1];
-    
+        
     }
     
 }

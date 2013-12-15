@@ -18,4 +18,6 @@
 @property (nonatomic,copy) NSString *isMain;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
 @property (nonatomic, strong) AKTabBarController *tabBarController;
+@property (strong,nonatomic)UIActivityIndicatorView * activityView;
+
 @end

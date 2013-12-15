@@ -40,6 +40,8 @@
     UIButton *zoomout;
     UIButton *zoomin;
     UIButton *location;
+    
+
 }
 @synthesize isMain = _isMain;
 @synthesize tableV = _tableV;
@@ -58,7 +60,10 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
+//[SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
+    
+    
+    
     arrayList = [[NSMutableArray alloc]initWithCapacity:0];
     annotationArray = [[NSMutableArray alloc]initWithCapacity:0];
     j = 0;
@@ -122,11 +127,18 @@
     [self.view addSubview:location];
     [location addTarget:self action:@selector(reLocated) forControlEvents:UIControlEventTouchUpInside];
     self.data = [[NSMutableData alloc] init];
+    
+    self.activityView=[[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135, ([UIScreen mainScreen].bounds.size.height-200), 50, 50)];
+    [self.activityView setBackgroundColor:[UIColor blackColor]];
+    self.activityView.alpha = 0.4;
+    [self.view addSubview:self.activityView];
+    [self.activityView startAnimating];
+
 }
 
 -(void)reLocated{
-    
-    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
+    [self.activityView startAnimating];
+    //[SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
     //_mapView.showsUserLocation = NO;
     [self UpdataData];
 }
@@ -188,7 +200,8 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     _mapView.showsUserLocation = YES;
     //_mapView.zoomLevel=16.0;
-    [SVProgressHUD dismiss];
+    //[SVProgressHUD dismiss];
+    [self.activityView stopAnimating];
     [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
     //反编译
     CLLocationCoordinate2D pt = (CLLocationCoordinate2D){0, 0};
@@ -211,6 +224,10 @@
     NSLog(@"Connection failed! Error - %@ %@",
           [error localizedDescription],
           [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+    //[SVProgressHUD dismiss];
+    [self.activityView stopAnimating];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"网络连接失败，请稍后重试。" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
 }
 #pragma mark baidu
 

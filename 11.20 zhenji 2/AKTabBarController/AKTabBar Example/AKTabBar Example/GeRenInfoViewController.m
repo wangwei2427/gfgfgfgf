@@ -283,10 +283,7 @@
     image=nil;
     self.title=@"个人资料";
     
-    self.activityView=[[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135, ([UIScreen mainScreen].bounds.size.height-200), 50, 50)];
-    [self.activityView setBackgroundColor:[UIColor blackColor]];
-    self.activityView.alpha = 0.4;
-    [self.view addSubview:self.activityView];
+    
     
     [self addButton];
     self.actView=[[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(110, ([UIScreen mainScreen].bounds.size.height-100)/2, 100, 100)];
