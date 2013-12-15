@@ -53,12 +53,12 @@
     return self;
 }
 -(void)viewDidAppear:(BOOL)animated{
-    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
     arrayList = [[NSMutableArray alloc]initWithCapacity:0];
     annotationArray = [[NSMutableArray alloc]initWithCapacity:0];
     j = 0;
@@ -127,7 +127,7 @@
 -(void)reLocated{
     
     [SVProgressHUD showWithStatus:@"加载中..." maskType:SVProgressHUDMaskTypeClear];
-    _mapView.showsUserLocation = NO;
+    //_mapView.showsUserLocation = NO;
     [self UpdataData];
 }
 
@@ -157,11 +157,11 @@
     //    }
     
     //,self.strLat,self.strLon];
-//    
+//
+    self.data.length = 0;
     NSString * str=[NSString stringWithFormat:@"http://fr.eslgw.com/index.php/mobile/river_list?lng=%@&lat=%@",@"116.451248",@"39.86355"];
     NSURLRequest *request = [[NSURLRequest alloc]initWithURL:[NSURL URLWithString:str] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
       NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:self];
-    [connection start];
 //    NSData * response=[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 //    
 //    if (response) {
@@ -175,18 +175,42 @@
     
 }
 -(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-   
+    
     [self.data appendData:data];
     if (self.data) {
       arrayList=[NSJSONSerialization JSONObjectWithData:self.data options:NSJSONReadingMutableLeaves error:nil];
       [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
+        [self setAnnotionsWithList:arrayList];
+        NSLog(@"<><><><><><><><><><><><><><><><><><><>%d",arrayList.count);
     }
-
+    [_tableV reloadData];
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     _mapView.showsUserLocation = YES;
     //_mapView.zoomLevel=16.0;
     [SVProgressHUD dismiss];
+    [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
+    //反编译
+    CLLocationCoordinate2D pt = (CLLocationCoordinate2D){0, 0};
+    pt = (CLLocationCoordinate2D){[lat doubleValue], [lon doubleValue]};
+    BOOL flag = [_search reverseGeocode:pt];
+    if (flag) {
+        NSLog(@"ReverseGeocode search success.");
+        
+    }
+    else{
+        NSLog(@"ReverseGeocode search failed!");
+        //            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查定位功能或稍后重试" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        //            [alert show];
+        
+    }
+
+}
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *) error {
+    self.data = nil;
+    NSLog(@"Connection failed! Error - %@ %@",
+          [error localizedDescription],
+          [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 }
 #pragma mark baidu
 
@@ -204,9 +228,9 @@
         pointAnnotation2.coordinate = coor2;
         [_mapView addAnnotation:pointAnnotation2];
         [annotationArray addObject:pointAnnotation2];
-        driverStatus = [dic objectForKey:@"driverStatus"];
-        daijia_name = [dic objectForKey:@"daijia_name"];
-        daijia_jiebie_id = [dic objectForKey:@"daijia_jiebie_id"];
+//        driverStatus = [dic objectForKey:@"driverStatus"];
+//        daijia_name = [dic objectForKey:@"daijia_name"];
+//        daijia_jiebie_id = [dic objectForKey:@"daijia_jiebie_id"];
     }
 
 }
@@ -225,7 +249,7 @@
     // 设置可拖拽
     ((BMKPinAnnotationView*)newAnnotation).draggable = NO;
     //设置大头针图标
-    if ([driverStatus isEqualToString:@"1"]) {
+    if ([[arrayList[j] objectForKey:@"driverStatus"] isEqualToString:@"1"]) {
         ((BMKPinAnnotationView*)newAnnotation).image = [UIImage imageNamed:@"driver_green"];
     }
     else{
@@ -233,13 +257,14 @@
     }
     //司机姓名
     UILabel *driverName = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 60, 20)];
-    driverName.text = daijia_name;
+    driverName.text = [[arrayList objectAtIndex:j] objectForKey:@"daijia_name"];
+    
     driverName.backgroundColor = [UIColor clearColor];
     driverName.font = [UIFont systemFontOfSize:12];
     driverName.textColor = [UIColor blackColor];
     driverName.textAlignment = NSTextAlignmentCenter;
     [newAnnotation addSubview:driverName];
-    UIImageView *star = [[UIImageView alloc]initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"星星%d",[daijia_jiebie_id intValue]]]];
+    UIImageView *star = [[UIImageView alloc]initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"星星%d",[[[arrayList objectAtIndex:j]objectForKey:@"daijia_jiebie_id"]intValue]]]];
     star.frame = CGRectMake(5, 15, 50, 10);
     [newAnnotation addSubview:star];
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -247,18 +272,15 @@
     [btn addTarget:self action:@selector(annotationClick:) forControlEvents:UIControlEventTouchUpInside];
     [newAnnotation addSubview:btn];
     btn.tag = j;
-    
-    
-    
+    NSLog(@"----%d",j);
     newAnnotation.tag = j;
     j++;
     return newAnnotation;
-    
 }
 -(void)annotationClick:(UIButton *)sender
 {
     AppDelegate *my=(AppDelegate *)[[UIApplication sharedApplication]delegate];
-    my.dict = [arrayList objectAtIndex:sender.tag-1];
+    my.dict = [arrayList objectAtIndex:sender.tag];
     NSLog(@"%@",my.dict);
     SiJiXiangQingViewController * siji=[[SiJiXiangQingViewController alloc]initWithDic:my.dict father:@"1"];
     [self.navigationController pushViewController:siji animated:YES];
@@ -425,21 +447,21 @@
         if (!isLocated) {
             [self UpdataData];
             isLocated = YES;
-            [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
-            //反编译
-            CLLocationCoordinate2D pt = (CLLocationCoordinate2D){0, 0};
-            pt = (CLLocationCoordinate2D){[lat doubleValue], [lon doubleValue]};
-            BOOL flag = [_search reverseGeocode:pt];
-            if (flag) {
-                NSLog(@"ReverseGeocode search success.");
-                
-            }
-            else{
-                NSLog(@"ReverseGeocode search failed!");
-                //            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查定位功能或稍后重试" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                //            [alert show];
-                
-            }
+//            [_mapView setCenterCoordinate:_mapView.userLocation.coordinate animated:YES];
+//            //反编译
+//            CLLocationCoordinate2D pt = (CLLocationCoordinate2D){0, 0};
+//            pt = (CLLocationCoordinate2D){[lat doubleValue], [lon doubleValue]};
+//            BOOL flag = [_search reverseGeocode:pt];
+//            if (flag) {
+//                NSLog(@"ReverseGeocode search success.");
+//                
+//            }
+//            else{
+//                NSLog(@"ReverseGeocode search failed!");
+//                //            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查定位功能或稍后重试" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+//                //            [alert show];
+//                
+//            }
             
         }
         //[self.activityView stopAnimating];
