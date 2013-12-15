@@ -15,7 +15,7 @@
 #import "CustomOverlayView.h"
 #import "CustomOverlay.h"
 #import "BMKRouteSearchType.h"
-
+#import "BMKSearch.h"
 #define w 55
 #define h 15
 
@@ -79,6 +79,7 @@
     if (btn.tag==4) {
         
         SiJiXiangQingViewController * siji=[[SiJiXiangQingViewController alloc]initWithDic:[self.arrSJ objectAtIndex:0] f:@"3"];
+        NSLog(@"%@",self.arrSJ);
         [self.navigationController pushViewController:siji animated:YES];
         siji=nil;
     }
@@ -163,7 +164,7 @@
     self.labelAdds.font=textFont;
     self.labelAdds.text=[self.dicList objectForKey:@"yuyue_didian"];
     [self.view addSubview:self.labelAdds];
-    self.labelAdds=nil;
+   self.labelAdds=nil;
     
     self.labelDingDanHaoMa=[[UILabel alloc]initWithFrame:CGRectMake(70, 140, w+w, h)];
     self.labelDingDanHaoMa.text=[self.dicList objectForKey:@"order_num"];
@@ -309,7 +310,7 @@
     if (p!=0) {
         [self.view addSubview:self.labelFPYouzi];
     }
-    self.labelFPYouzi=nil;
+self.labelFPYouzi=nil;
     
     textFont=nil;
     
@@ -365,85 +366,79 @@
     [self.activityView stopAnimating];
     
 }
--(void)updataXX
+-(void)updateData
 {
     NSString * strid=[self.dicList objectForKey:@"id"];
-  
-    NSError * error;
-    // NSString * str=@"http://192.168.1.98/index.php/mobile/river?id=1";
+    [self.activityView startAnimating];
+
+    self.data.length = 0;
     NSString * str=[NSString stringWithFormat:@"http://fr.eslgw.com/index.php/mobile/get_history_order_info?id=%@",strid];
-    
-    NSURLRequest * request=[NSURLRequest requestWithURL:[NSURL URLWithString:str]];
-    NSData * response=[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    if (response){
-        self.arrSJ=[NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableLeaves error:&error];
+    NSURLRequest *request = [[NSURLRequest alloc]initWithURL:[NSURL URLWithString:str] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+    NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:self];
+
+}
+
+-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.activityView stopAnimating];
+
+    [self.data appendData:data];
+    if (self.data) {
+        self.arrSJ=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
         self.dicList = [self.arrSJ objectAtIndex:0];
         NSLog(@"self.arrSj=%@",self.dicList);
-        NSLog(@"UUID=%@",[NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableLeaves error:&error]);
+        NSLog(@"UUID=%@",[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]);
+        [self addButton];
+
     }
-    strid=nil;
-    str=nil;
-    
-  [self addButton];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
 }
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *) error {
+    self.data = nil;
+    NSLog(@"Connection failed! Error - %@ %@",
+          [error localizedDescription],
+          [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+    //[SVProgressHUD dismiss];
+    [self.activityView stopAnimating];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"网络连接失败，请稍后重试。" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title=@"订单详情";
-    
+    self.data = [[NSMutableData alloc] init];
+
     _historyMap = [[BMKMapView alloc]initWithFrame:CGRectMake(0, 337, 320, 180)];
     [self.view addSubview:_historyMap];
-    //_historyMap.delegate = self;
+    _historyMap.delegate = self;
+    int num = 4;
     
-//    BMKRoute *path = [[BMKRoute alloc]init];
-  //  path
+    CLLocationCoordinate2D coors[4] = {0};
+    coors[0].latitude = 39.315;
+    coors[0].longitude = 116.304;
+    coors[1].latitude = 39.515;
+    coors[1].longitude = 116.504;
+    coors[2].latitude = 39.515;
+    coors[2].longitude = 116.504;
+    coors[3].latitude = 39.815;
+    coors[3].longitude = 116.704;
+    _historyMap.centerCoordinate = coors[0];
+    BMKPolyline* polyline = [BMKPolyline polylineWithCoordinates:coors count:4];
+    [_historyMap addOverlay:polyline];
+   
+    for (int i = 0; i < num; i++) {
+        // 添加一个PointAnnotation
+        BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+        annotation.coordinate = coors[i];
+        annotation.title = @"司机当前位置";
+        [_historyMap addAnnotation:annotation];
+    }
     
     
-    CLLocationCoordinate2D coor1;
-	coor1.latitude = 39.915;
-	coor1.longitude = 116.404;
-    BMKMapPoint pt1 = BMKMapPointForCoordinate(coor1);
-    CLLocationCoordinate2D coor2;
-	coor2.latitude = 40.015;
-	coor2.longitude = 116.404;
-    BMKMapPoint pt2 = BMKMapPointForCoordinate(coor2);
-    BMKMapPoint * temppoints = new BMKMapPoint[2];
-    temppoints[0].x = pt2.x;
-    temppoints[0].y = pt2.y;
-    temppoints[1].x = pt1.x;
-    temppoints[1].y = pt1.y;
-    CustomOverlay* custom = [[CustomOverlay alloc] initWithPoints:temppoints count:2];
-	[_historyMap addOverlay:custom];
     
-    CLLocationCoordinate2D coor3;
-	coor3.latitude = 39.915;
-	coor3.longitude = 116.504;
-    BMKMapPoint pt3 = BMKMapPointForCoordinate(coor3);
-    CLLocationCoordinate2D coor4;
-	coor4.latitude = 40.015;
-	coor4.longitude = 116.504;
-    BMKMapPoint pt4 = BMKMapPointForCoordinate(coor4);
-    CLLocationCoordinate2D coor5;
-	coor5.latitude = 39.965;
-	coor5.longitude = 116.604;
-    BMKMapPoint pt5 = BMKMapPointForCoordinate(coor5);
-    BMKMapPoint * temppoints2 = new BMKMapPoint[3];
-    temppoints2[0].x = pt3.x;
-    temppoints2[0].y = pt3.y;
-    temppoints2[1].x = pt4.x;
-    temppoints2[1].y = pt4.y;
-    temppoints2[2].x = pt5.x;
-    temppoints2[2].y = pt5.y;
-    CustomOverlay* custom2 = [[CustomOverlay alloc] initWithPoints:temppoints2 count:3] ;
-	[_historyMap addOverlay:custom2];
-
-    
-    self.activityView=[[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(110, ([UIScreen mainScreen].bounds.size.height-100)/2, 100, 100)];
-    [ self.activityView setBackgroundColor:[UIColor lightGrayColor]];
-    [self.view addSubview:self.activityView];
-    [self.activityView startAnimating];
-
     UIFont * textFont=[UIFont systemFontOfSize:12];
 
     self.labelDingDanHao=[[UILabel alloc]initWithFrame:CGRectMake(10, 140, w, h)];
@@ -529,28 +524,36 @@
         [self addButton];
     }else
     {
-        [self performSelector:@selector(updataXX) withObject:nil afterDelay:0.1];
+       // [self performSelector:@selector(updateData) withObject:nil afterDelay:0.1];
         
     }
-    
+    self.activityView=[[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135, ([UIScreen mainScreen].bounds.size.height-200), 50, 50)];
+    [self.activityView setBackgroundColor:[UIColor blackColor]];
+    self.activityView.alpha = 0.4;
+    [self.view addSubview:self.activityView];
+    [self.activityView startAnimating];
 }
-
 - (BMKOverlayView *)mapView:(BMKMapView *)mapView viewForOverlay:(id <BMKOverlay>)overlay
 {
-    if ([overlay isKindOfClass:[CustomOverlay class]])
-    {
-        CustomOverlayView* cutomView = [[CustomOverlayView alloc] initWithOverlay:overlay];
-        cutomView.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:1];
-        cutomView.fillColor = [[UIColor purpleColor] colorWithAlphaComponent:0.5];
-        cutomView.lineWidth = 3.0;
-        return cutomView;
-        
-        
+    if ([overlay isKindOfClass:[BMKPolyline class]]){
+        BMKPolylineView* polylineView = [[BMKPolylineView alloc] initWithOverlay:overlay];
+        polylineView.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:1];
+        polylineView.lineWidth = 2.0;
+        return polylineView;
     }
     return nil;
     
 }
-
+- (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
+        BMKPinAnnotationView *newAnnotationView = [[BMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"myAnnotation"];
+        newAnnotationView.pinColor = BMKPinAnnotationColorPurple;
+        newAnnotationView.animatesDrop = YES;// 设置该标注点动画显示
+        return newAnnotationView;
+    }
+    return nil;
+}
 - (void)mapViewWillStartLocatingUser:(BMKMapView *)mapView
 {
     NSLog(@"start locating");
@@ -589,15 +592,20 @@
 {
     [_historyMap viewWillAppear];
     _historyMap.delegate = self;
-    _historyMap.showsUserLocation = YES;
-    [self updataXX];
+    _search.delegate = self;
+    //_historyMap.showsUserLocation = YES;
 }
+-(void)viewDidAppear:(BOOL)animated
+{
+    [self updateData];
 
+}
 -(void)viewWillDisappear:(BOOL)animated
 {
     [_historyMap viewWillDisappear];
     [_historyMap removeFromSuperview];
     _historyMap.delegate = nil;
+    _search.delegate = nil;
     
 }
 - (void)didReceiveMemoryWarning

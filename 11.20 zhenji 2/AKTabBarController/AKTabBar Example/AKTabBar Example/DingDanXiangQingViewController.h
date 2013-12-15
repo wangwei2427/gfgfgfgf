@@ -12,9 +12,10 @@
 
 @protocol MapViewControllerDidSelectDelegate;
 
-@interface DingDanXiangQingViewController : UIViewController<BMKMapViewDelegate>
+@interface DingDanXiangQingViewController : UIViewController<BMKMapViewDelegate,BMKSearchDelegate>
 {
     BMKMapView* _historyMap;
+    BMKSearch* _search;
 }
 
 
@@ -69,6 +70,7 @@
 @property (strong,nonatomic)NSDictionary * dicList;
 @property (strong,nonatomic)NSArray * arrSJ;
 
+@property (nonatomic, strong) NSMutableData *data;
 
 @property (strong,nonatomic)UIActivityIndicatorView * activityView;
 

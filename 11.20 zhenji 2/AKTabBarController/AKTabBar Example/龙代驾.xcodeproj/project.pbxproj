@@ -176,6 +176,7 @@
 		04FCFD57182B49520097FE32 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FCFD56182B49520097FE32 /* MessageUI.framework */; };
 		04FCFD5B182B4A810097FE32 /* 短信推荐.png in Resources */ = {isa = PBXBuildFile; fileRef = 04FCFD58182B4A810097FE32 /* 短信推荐.png */; };
 		04FCFD5D182B4A810097FE32 /* 微信推荐.png in Resources */ = {isa = PBXBuildFile; fileRef = 04FCFD5A182B4A810097FE32 /* 微信推荐.png */; };
+		7B060F9A185DCFEE005B1701 /* MapAndListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B060F99185DCFEE005B1701 /* MapAndListVC.m */; };
 		7B2637DA155333E100013EE7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B2637D9155333E100013EE7 /* UIKit.framework */; };
 		7B2637DC155333E100013EE7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B2637DB155333E100013EE7 /* Foundation.framework */; };
 		7B2637DE155333E100013EE7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B2637DD155333E100013EE7 /* CoreGraphics.framework */; };
@@ -187,7 +188,6 @@
 		7B263832155338D500013EE7 /* FourthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B263831155338D500013EE7 /* FourthViewController.m */; };
 		7B26383E1553412000013EE7 /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B26383D1553412000013EE7 /* ContentViewController.m */; };
 		7BB60588185BF3E6002C9FB1 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BB60587185BF3E6002C9FB1 /* libbaidumapapi.a */; };
-		7BE8B571185C083600693AAA /* MapAndListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE8B56F185C083600693AAA /* MapAndListVC.m */; };
 		7BE8B572185C083600693AAA /* MapAndListVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7BE8B570185C083600693AAA /* MapAndListVC.xib */; };
 		7BE8B596185C25DA00693AAA /* OAApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE8B595185C25DA00693AAA /* OAApi.m */; };
 		7BE8B5B1185C268800693AAA /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE8B599185C268700693AAA /* NSObject+SBJson.m */; };
@@ -428,6 +428,7 @@
 		04FCFD56182B49520097FE32 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		04FCFD58182B4A810097FE32 /* 短信推荐.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "短信推荐.png"; sourceTree = "<group>"; };
 		04FCFD5A182B4A810097FE32 /* 微信推荐.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "微信推荐.png"; sourceTree = "<group>"; };
+		7B060F99185DCFEE005B1701 /* MapAndListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapAndListVC.m; sourceTree = "<group>"; };
 		7B2637D5155333E100013EE7 /* 龙代驾.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "龙代驾.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B2637D9155333E100013EE7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7B2637DB155333E100013EE7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -484,7 +485,6 @@
 		7BB60586185BF3E6002C9FB1 /* BMKVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMKVersion.h; sourceTree = "<group>"; };
 		7BB60587185BF3E6002C9FB1 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
 		7BE8B56E185C083600693AAA /* MapAndListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapAndListVC.h; sourceTree = "<group>"; };
-		7BE8B56F185C083600693AAA /* MapAndListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapAndListVC.m; sourceTree = "<group>"; };
 		7BE8B570185C083600693AAA /* MapAndListVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapAndListVC.xib; sourceTree = "<group>"; };
 		7BE8B594185C25DA00693AAA /* OAApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAApi.h; sourceTree = "<group>"; };
 		7BE8B595185C25DA00693AAA /* OAApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAApi.m; sourceTree = "<group>"; };
@@ -759,7 +759,6 @@
 				04007F9A18308C6E00EC1568 /* ShouyeMapViewController.m */,
 				04007F9B18308C6E00EC1568 /* ShouyeMapViewController.xib */,
 				7BE8B56E185C083600693AAA /* MapAndListVC.h */,
-				7BE8B56F185C083600693AAA /* MapAndListVC.m */,
 				7BE8B570185C083600693AAA /* MapAndListVC.xib */,
 			);
 			path = Map;
@@ -768,6 +767,7 @@
 		04EEFB2418177D560097C3AA /* bdmap */ = {
 			isa = PBXGroup;
 			children = (
+				7B060F99185DCFEE005B1701 /* MapAndListVC.m */,
 				7BE8B5C3185C5A6300693AAA /* CustomOverlay.h */,
 				7BE8B5C4185C5A6300693AAA /* CustomOverlay.mm */,
 				7BE8B5C5185C5A6300693AAA /* CustomOverlayView.h */,
@@ -1294,6 +1294,7 @@
 				0416D1C817EED75A000934EB /* SinaWeiboRequest.m in Sources */,
 				04F182D0180E9B55004D9E64 /* DaiJiaXieYiViewController.m in Sources */,
 				0416D1CA17EED75A000934EB /* RespForWeChatViewController.mm in Sources */,
+				7B060F9A185DCFEE005B1701 /* MapAndListVC.m in Sources */,
 				0416D1CB17EED75A000934EB /* SendMsgToWeChatViewController.m in Sources */,
 				0416D1CC17EED75A000934EB /* TextViewController.m in Sources */,
 				0416D1D017EEE425000934EB /* JSONKit.m in Sources */,
@@ -1311,7 +1312,6 @@
 				04EEAED518233B9500BF707A /* ShouFeiJiuHouViewController.m in Sources */,
 				04F734931803B942001E92D7 /* ZhuCeViewController.m in Sources */,
 				7BE8B5B7185C268800693AAA /* SBJsonStreamWriter.m in Sources */,
-				7BE8B571185C083600693AAA /* MapAndListVC.m in Sources */,
 				04EEFB5718177D560097C3AA /* MapOutAnnotationView.m in Sources */,
 				04EAE1351814BA2100CD10F1 /* SiJiXiangQingViewController.m in Sources */,
 				04007F9C18308C6E00EC1568 /* ShouyeMapViewController.m in Sources */,

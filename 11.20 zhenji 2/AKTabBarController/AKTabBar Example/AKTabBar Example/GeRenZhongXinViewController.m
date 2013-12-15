@@ -185,17 +185,18 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    NSDictionary * ddd=[self.arrayList objectAtIndex:[indexPath row]];
+    NSDictionary * ddd=[self.arrayList objectAtIndex:indexPath.row];
   
     DingDanXiangQingViewController * ddxq=[[DingDanXiangQingViewController alloc]initWithDic:ddd];
     NSString * string=[ddd objectForKey:@"id"];
+    NSLog(@"%@",[ddd objectForKey:@"id"]);
     UIImage * ima=[UIImage imageWithData:[self.dicImage objectForKey:string]];
     ddxq.imagePic=ima;
     [self.navigationController pushViewController:ddxq animated:YES];
-    ima=nil;
-    string=nil;
-    ddd=nil;
-    ddxq=nil;
+//    ima=nil;
+//    string=nil;
+//    ddd=nil;
+//    ddxq=nil;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
